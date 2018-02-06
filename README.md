@@ -12,8 +12,13 @@ This is a fully functional Jenkins server.
 
 ```
 docker run -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
+
 ```
 
+Custom command example
+```
+docker run -itd  --name ansible_jenkins  -p 8080:8080 -p 5000:5000  -v /root/jenkins_home:/var/jenkins_home -v /root/jenkins/files/ssh.conf:/root/.ssh/ -v /root/jenkins/files/ansible-ssh/ansible:/etc/ansible/ -v /root/jenkins/files/ansible-ssh/ansibledir/:/ansible/playbooks -v /root/jenkins/files/.aws:/root/.aws/ test
+```
 NOTE: read below the _build executors_ part for the role of the `50000` port mapping.
 
 This will store the workspace in /var/jenkins_home. All Jenkins data lives in there - including plugins and configuration.
