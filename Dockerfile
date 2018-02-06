@@ -35,22 +35,25 @@ RUN apt-get -y upgrade
 #RUN apt-get install -y python python-dev python-pip python-virtualenv
 #RUN apt-get install python-boto python-pip python-dev build-essential 
 #RUN pip install --upgrade pip && pip install boto
-ARG user=jenkins
-ARG group=jenkins
-ARG uid=1000
-ARG gid=1000
+#ARG user=jenkins
+#ARG group=jenkins
+#ARG uid=1000
+#ARG gid=1000
 ARG http_port=8080
 ARG agent_port=50000
 
 ENV JENKINS_HOME /var/jenkins_home
 ENV JENKINS_SLAVE_AGENT_PORT ${agent_port}
+ENV ANSIBLE_HOSTS=/etc/ansible/hosts/ec2.py
+ENV EC2_INI_PATH=/etc/ansible/ec2.ini
 
 # Jenkins is run with user `jenkins`, uid = 1000
 # If you bind mount a volume from the host or a data container,
 # ensure you use the same uid
-RUN groupadd -g ${gid} ${group} \
-    && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
-    &&adduser jenkins sudo
+#RUN groupadd -g ${gid} ${group} \
+#    && useradd -d "$JENKINS_HOME" -u ${uid} -g ${gid} -m -s /bin/bash ${user} \
+#    &&adduser jenkins sudo
+#`CMD ssh-agent bash && ssh-add /root/.ssh/sshdnkey.pem
 
 # Jenkins home directory is a volume, so configuration and build history
 # can be persisted and survive image upgrades
@@ -90,7 +93,7 @@ RUN curl -fsSL ${JENKINS_URL} -o /usr/share/jenkins/jenkins.war \
 
 ENV JENKINS_UC https://updates.jenkins.io
 ENV JENKINS_UC_EXPERIMENTAL=https://updates.jenkins.io/experimental
-RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref
+#RUN chown -R ${user} "$JENKINS_HOME" /usr/share/jenkins/ref
 RUN apt-get update && apt-get install -y python python-dev python-pip python-virtualenv python-boto python-pip python-dev build-essential
 # for main web interface:
 EXPOSE ${http_port}
@@ -99,7 +102,7 @@ EXPOSE ${http_port}
 EXPOSE ${agent_port}
 
 ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.log
-
+#CMD ssh-agent bash && ssh-add /root/.ssh/sshdnkey.pem
 USER ${user}
 
 COPY jenkins-support /usr/local/bin/jenkins-support
